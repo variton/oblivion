@@ -6,7 +6,7 @@ LAB_DIR="${LAB:-$(pwd)}"
 REPORT_DIR="${REPORT_DIR:-valgrind-reports}"
 REPORTS_DIR="reports"
 DOCS_BUILD_DIR="docs/build"
-DOCS_DIR="docs"
+DOCS_DIR="$LAB_DIR/docs"
 DOCS_LOG="docs.log"
 
 log() {
@@ -116,7 +116,6 @@ for file in "$LAB_DIR"/bin/test_*; do
   fi
 done
 
-cp "$DOCS_DIR"/valgrind-report.html "$REPORTS_DIR"/valgrind-report.html
 
 if [[ "$found_tests" -eq 0 ]]; then
   log "No test binaries found in $LAB_DIR/bin"
@@ -124,6 +123,8 @@ fi
 
 log "Generating HTML Valgrind report"
 python3 tools/valgrind-report-maker.py "$REPORT_DIR" -o docs/valgrind-report.html
+
+cp "$DOCS_DIR"/valgrind-report.html "$REPORTS_DIR"/valgrind-report.html
 
 log "Running clang-format"
 shopt -s globstar
