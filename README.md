@@ -1,7 +1,7 @@
 # Xpic-processor
-Cli and tools to process images files.
-A cpp wrapper around libjpeg to process images files.
-It is intended to provide a simple cli to deinterlace images.
+Cli and tools to process image files.
+It implements a cpp wrapper around libjpeg to process jpeg files.
+It is also intended to provide a simple cli to deinterlace images.
 
 ## Quick start
 ### Prepare environment
