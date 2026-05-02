@@ -78,6 +78,18 @@ JpegCompressor::compress() noexcept {
   return {};
 }
 
+tl::expected<void, JpegCompressorErrorInfo>
+JpegCompressor::finish_compress() noexcept {
+
+  jpeg_finish_compress(&cinfo_);
+
+  if (setjmp(err_.setjmp_buf))
+    return tl::unexpected(
+        JpegCompressorErrorInfo{JpegCompressorError::FinishCompressionError,
+                                "JPEG finish compression failed"});
+  return {};
+}
+
 /**
  * Access the underlying libjpeg compression struct.
  *
