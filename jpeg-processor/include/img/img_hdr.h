@@ -77,7 +77,7 @@ public:
    * @return `tl::expected` containing the output image dimensions on success,
    *         or @ref ImageErrorInfo on failure.
    */
-  tl::expected<ImgDimension, ImageErrorInfo> blend(int quality = 0) noexcept;
+  tl::expected<ImgDimension, ImageErrorInfo> blend(int quality = 85) noexcept;
 
 private:
   /**
@@ -94,8 +94,6 @@ private:
   /** @brief Output image path. */
   std::string_view output_;
 
-  /** @brief Processing quality parameter. */
-  int quality_;
 };
 
 } // namespace img
