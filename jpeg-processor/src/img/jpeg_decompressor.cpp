@@ -44,10 +44,11 @@ tl::expected<void, JpegDecompressorErrorInfo>
 JpegDecompressor::init(FILE *infp) noexcept {
   // libjpeg uses setjmp/longjmp for error handling
   if (setjmp(err_.setjmp_buf))
-    return tl::unexpected(JpegDecompressorErrorInfo{JpegDecompressorError::InitDecompressionError,
-                                                    "JPEG decompression init failed"});
-        //std::string("JPEG decompression init failed : ") + err_.message});
-        //"JPEG decompression init failed : " + std::string{err_.message}});
+    return tl::unexpected(
+        JpegDecompressorErrorInfo{JpegDecompressorError::InitDecompressionError,
+                                  "JPEG decompression init failed"});
+  // std::string("JPEG decompression init failed : ") + err_.message});
+  //"JPEG decompression init failed : " + std::string{err_.message}});
 
   // Attach input file to decompressor
   jpeg_stdio_src(&cinfo_, infp);
@@ -61,7 +62,7 @@ JpegDecompressor::init(FILE *infp) noexcept {
   cinfo_.out_color_space = JCS_YCbCr;
 
   // use to force libjpeg to emit an error message
-  //jpeg_start_decompress(&cinfo_);
+  // jpeg_start_decompress(&cinfo_);
 
   return {};
 }
@@ -75,6 +76,18 @@ JpegDecompressor::decompress() noexcept {
     return tl::unexpected(
         JpegDecompressorErrorInfo{JpegDecompressorError::DecompressionError,
                                   "JPEG decompression failed"});
+  return {};
+}
+
+tl::expected<void, JpegDecompressorErrorInfo>
+JpegDecompressor::finish_decompress() noexcept {
+
+  jpeg_finish_decompress(&cinfo_);
+
+  if (setjmp(err_.setjmp_buf))
+    return tl::unexpected(JpegDecompressorErrorInfo{
+        JpegDecompressorError::FinishDecompressionError,
+        "JPEG finish decompression failed"});
   return {};
 }
 

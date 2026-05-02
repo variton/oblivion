@@ -21,6 +21,7 @@ template <typename T> using Movable = core::NC<T>;
 enum class JpegCompressorError {
   InitCompressionError,
   CompressionError,
+  FinishCompressionError,
 };
 
 using JpegCompressorErrorInfo = err::ErrorInfo<JpegCompressorError>;
@@ -53,6 +54,7 @@ public:
   tl::expected<void, JpegCompressorErrorInfo>
   init(FILE *outfp, const InputImg &inputimg, int quality) noexcept;
   tl::expected<void, JpegCompressorErrorInfo> compress() noexcept;
+  tl::expected<void, JpegCompressorErrorInfo> finish_compress() noexcept;
 
   /**
    * @brief Access the underlying libjpeg compression structure.

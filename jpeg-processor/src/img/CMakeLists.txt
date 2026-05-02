@@ -2,7 +2,8 @@
 add_library(img SHARED
             img_hdr.cpp
             jpeg_compressor.cpp
-            jpeg_decompressor.cpp)
+            jpeg_decompressor.cpp
+            blender.cpp)
 
 target_include_directories(img PUBLIC
   $<BUILD_INTERFACE:${CMAKE_INCLUDE_PATH}/img>

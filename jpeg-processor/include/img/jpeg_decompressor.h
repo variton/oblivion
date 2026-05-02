@@ -17,7 +17,11 @@ namespace img {
  */
 template <typename T> using Movable = core::NC<T>;
 
-enum class JpegDecompressorError { InitDecompressionError, DecompressionError };
+enum class JpegDecompressorError {
+  InitDecompressionError,
+  DecompressionError,
+  FinishDecompressionError
+};
 
 using JpegDecompressorErrorInfo = err::ErrorInfo<JpegDecompressorError>;
 
@@ -47,6 +51,7 @@ public:
 
   tl::expected<void, JpegDecompressorErrorInfo> init(FILE *infp) noexcept;
   tl::expected<void, JpegDecompressorErrorInfo> decompress() noexcept;
+  tl::expected<void, JpegDecompressorErrorInfo> finish_decompress() noexcept;
 
   /**
    * @brief Access the underlying libjpeg decompression structure.
