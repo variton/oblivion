@@ -15,7 +15,7 @@ namespace img {
  * Stores input/output paths and sets default JPEG quality.
  */
 ImgHdr::ImgHdr(std::string_view input, std::string_view output) noexcept
-    : input_{input}, output_{output}, quality_{85} {}
+    : input_{input}, output_{output} {}
 
 /**
  * Perform HDR-like blending by vertically averaging adjacent scanlines.
@@ -54,9 +54,7 @@ tl::expected<ImgDimension, ImageErrorInfo> ImgHdr::blend(int quality) noexcept {
   // Compressor setup & processing
   JpegCompressor enc{};
 
-  auto ret_init_compressor = quality > 0
-                                 ? enc.init(outfp.get(), inputimg, quality)
-                                 : enc.init(outfp.get(), inputimg, quality_);
+  auto ret_init_compressor = enc.init(outfp.get(), inputimg, quality);
 
   if (!ret_init_compressor)
     return tl::unexpected(ImageErrorInfo{ImageError::EncodingError,
