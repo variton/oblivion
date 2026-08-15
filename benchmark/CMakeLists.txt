@@ -27,3 +27,33 @@ target_compile_options(sequence PRIVATE
                             -mtune=native
                             -funroll-loops
                             -fomit-frame-pointer>)
+
+#=======================================================================
+add_executable(mt
+    mt.cpp
+)
+
+target_include_directories(mt PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_INCLUDE_PATH}/quality>
+  $<BUILD_INTERFACE:${tcxx_SOURCE_DIR}/include/core>
+  $<BUILD_INTERFACE:${tcxx_SOURCE_DIR}/include/obs>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(mt PRIVATE 
+                      quality 
+                      fmt::fmt)
+
+target_link_options(mt PRIVATE 
+                    $<$<CONFIG:Debug>:--coverage>)
+
+target_compile_options(mt PRIVATE 
+                       -Wall -Wextra -pedantic
+                       $<$<CONFIG:Debug>:--coverage -Og -g>
+                       $<$<CONFIG:Release>:
+                            -O3 
+                            -DNDEBUG
+                            -march=native
+                            -mtune=native
+                            -funroll-loops
+                            -fomit-frame-pointer>)
