@@ -41,6 +41,7 @@ TEST_CASE("ComputePnsr OK") {
   auto ret_pnsr = pnsr_mgr.computePNSR(inputimg.width, inputimg.height,
                                        inputimg.components);
   CHECK(ret_pnsr.has_value());
+  // temporary variable type volatile, to display the value computed
   volatile double pnsr = ret_pnsr.value();
   CHECK(ret_pnsr.value() > 0);
 }
