@@ -30,7 +30,7 @@ enum class EnvMgrError {
   InvalidEnvVarType,
 };
 
-ERR_DEFINE_ERROR_INFO(EnvMgrError,EnvMgrErrorInfo);
+ERR_DEFINE_ERROR_INFO(EnvMgrError, EnvMgrErrorInfo);
 
 /**
  * @brief Singleton manager for reading and caching environment variables.
