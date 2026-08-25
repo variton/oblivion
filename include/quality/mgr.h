@@ -27,7 +27,8 @@ ERR_DEFINE_ERROR_INFO(MgrError, MgrErrorInfo);
 class Mgr : public Default<Mgr> {
 public:
   explicit Mgr(std::span<const std::uint8_t> original,
-               std::span<const std::uint8_t> watermarked, std::size_t width,
+               std::span<const std::uint8_t> watermarked, 
+               std::size_t width,
                std::size_t height) noexcept;
 
   ~Mgr();

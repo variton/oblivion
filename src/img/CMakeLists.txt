@@ -4,6 +4,7 @@ add_library(img SHARED
             jpeg_compressor.cpp
             jpeg_decompressor.cpp
             jpeg_decoder.cpp
+            channel_mgr.cpp
             blender.cpp)
 
 target_include_directories(img PUBLIC

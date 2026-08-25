@@ -57,7 +57,8 @@ public:
    * @param channels Number of channels per pixel.
    * @return PSNR value, or PSNRMgrErrorInfo on failure.
    */
-  tl::expected<double, PSNRMgrErrorInfo> computePNSR(int width, int height,
+  tl::expected<double, PSNRMgrErrorInfo> computePNSR(int width, 
+                                                     int height,
                                                      int channels) noexcept;
 
 private:
