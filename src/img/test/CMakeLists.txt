@@ -140,3 +140,33 @@ set_tests_properties(test_jpeg_decoder PROPERTIES
   ENVIRONMENT "RC=${TRC};OUT=${TOUT}"
 )
 
+#=======================================================================
+
+add_executable(test_channel_mgr
+               test_channel_mgr.cpp)
+
+target_include_directories(test_channel_mgr PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_INCLUDE_PATH}/img>
+  $<BUILD_INTERFACE:${CMAKE_INCLUDE_PATH}/fio>
+  $<BUILD_INTERFACE:${CMAKE_INCLUDE_PATH}/core>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(test_channel_mgr PRIVATE
+                      img
+                      fio
+                      doctest::doctest
+                      $<$<CONFIG:Debug>:--coverage>)
+
+target_compile_options(test_channel_mgr PRIVATE
+                       -Wall -Wextra -pedantic
+                       #$<$<CONFIG:Debug>:--coverage -Og -g>
+                       $<$<CONFIG:Debug>:-O0 -g3 -fno-inline -fno-omit-frame-pointer>
+                       $<$<CONFIG:Release>:-O3 -DNDEBUG>)
+
+add_test(NAME test_channel_mgr COMMAND $<TARGET_FILE:test_channel_mgr>)
+
+set_tests_properties(test_channel_mgr PROPERTIES
+  ENVIRONMENT "RC=${TRC};OUT=${TOUT}"
+)
+
