@@ -10,7 +10,7 @@ TEST_CASE("Has valid channels") {
   // img::ImgHdr hdr{input, output};
   // auto ret = hdr.blend(100);
   // CHECK(ret.has_value());
-  CHECK(true); 
+  CHECK(true);
 }
 
 TEST_CASE("Channel open input failure") {
@@ -22,7 +22,7 @@ TEST_CASE("Channel open input failure") {
   //   CHECK(ret.error().type == img::ImageError::OpenFileError);
   //   CHECK(ret.error().message == "Failed to open input file\n");
   // }
-  CHECK(true); 
+  CHECK(true);
 }
 
 TEST_CASE("Channel open output failure") {
