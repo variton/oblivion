@@ -2,37 +2,43 @@
 
 #include <doctest/doctest.h>
 
+#include <string>
+
 #include <channel_mgr.h>
 
-TEST_CASE("Has valid channels") {
-  // std::string input{"/home/cxx-core/rc/sample.jpg"};
-  // std::string output{"/home/cxx-core/test-results/sample-out.jpg"};
-  // img::ImgHdr hdr{input, output};
-  // auto ret = hdr.blend(100);
-  // CHECK(ret.has_value());
+#include <filehandler.h>
+#include <fmt/core.h>
+#include <inputimg.h>
+#include <jpeg_decoder.h>
+#include <jpeg_decompressor.h>
+
+TEST_CASE("SplitRGBChannels OK") {
+  std::string rc{"/home/cxx-core/rc"};
+  using namespace img;
+  std::string input{rc + "/ur.jpg"};
+  auto input_file = fio::FileHandler::open(input.data(), "rb");
+  // jpeg decompression creation ============================================
+  JpegDecompressor decompressor{};
+  auto ret_init_decompressor = decompressor.init(input_file.value().get());
+  auto ret_decompress = decompressor.decompress();
+  // image object creation ==================================================
+  InputImg inputimg{decompressor.cinfo()};
+  // jpeg decoder ===========================================================
+  JpegDecoder original{inputimg.width, inputimg.height, inputimg.components};
+  auto ret_decode = original.decode(decompressor);
+  CHECK(ret_decode.has_value());
+  auto pixels = original.pixels();
+  ChannelMgr channel_mgr{inputimg.width, inputimg.height, inputimg.components};
+  auto ret_split = channel_mgr.splitRGBChannels(pixels);
+  CHECK(ret_split.has_value());
+}
+
+TEST_CASE("Channel invalid dimension") {
+  // prepare context to propagate the right error
   CHECK(true);
 }
 
-TEST_CASE("Channel open input failure") {
-  // std::string input{"$ùoel"};
-  // std::string output{"/home/cxx-core/test-results/sample-out.jpg"};
-  // img::ImgHdr hdr{input, output};
-  // auto ret = hdr.blend(100);
-  // if (!ret) {
-  //   CHECK(ret.error().type == img::ImageError::OpenFileError);
-  //   CHECK(ret.error().message == "Failed to open input file\n");
-  // }
-  CHECK(true);
-}
-
-TEST_CASE("Channel open output failure") {
-  // std::string input{"/home/cxx-core/rc/sample.jpg"};
-  // std::string output{"xxxx/output.jpg"};
-  // img::ImgHdr hdr{input, output};
-  // auto ret = hdr.blend(100);
-  // if (!ret) {
-  //   CHECK(ret.error().type == img::ImageError::OpenFileError);
-  //   CHECK(ret.error().message == "Failed to open output file\n");
-  // }
+TEST_CASE("Channel expected rgb image") {
+  // prepare context to propagate the right error
   CHECK(true);
 }
