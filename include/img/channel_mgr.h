@@ -8,10 +8,11 @@
 #include <tl/expected.hpp>
 
 #include <array>
-#include <vector>
 #include <cstdint>
+#include <span>
+#include <vector>
 
-namespace img{
+namespace img {
 
 template <typename T> using Default = core::NCNM<T>;
 
@@ -19,23 +20,26 @@ using Channels = std::array<std::vector<std::uint8_t>, 3>;
 
 enum class ChannelError {
   ChannelImgDimError,
-  ChannelStructError
+  ChannelStructError,
+  ChannelSplitRGBError
 };
 
-ERR_DEFINE_ERROR_INFO(ChannelError,ChannelErrorInfo);
+ERR_DEFINE_ERROR_INFO(ChannelError, ChannelErrorInfo);
 
 class ChannelMgr : public core::NCNM<ChannelMgr> {
 public:
-  explicit ChannelMgr(int width, int height,int components) noexcept;
+  explicit ChannelMgr(int width, int height, int components) noexcept;
   ~ChannelMgr();
-  tl::expected<void, ChannelErrorInfo> has_valid_channels() noexcept;
+  tl::expected<Channels, ChannelErrorInfo>
+  splitRGBChannels(std::span<const std::uint8_t> pixels) noexcept;
 
 private:
+  tl::expected<void, ChannelErrorInfo> has_valid_channels() noexcept;
   int width_;
   int height_;
   int components_;
 };
 
-}
+} // namespace img
 
 #endif
