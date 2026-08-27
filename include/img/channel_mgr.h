@@ -3,7 +3,6 @@
 #define CHANNEL_MGR_H
 
 #include <err_utils.h>
-#include <filehandler.h>
 #include <ncnm.h>
 #include <tl/expected.hpp>
 
