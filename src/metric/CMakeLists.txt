@@ -1,5 +1,6 @@
 
 add_library(metric SHARED
+            mean_ssim_mgr.cpp
             pnsr_mgr.cpp
             ssim_mgr.cpp)
 
