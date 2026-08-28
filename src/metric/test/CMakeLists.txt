@@ -61,3 +61,36 @@ add_test(NAME test_ssim_mgr COMMAND $<TARGET_FILE:test_ssim_mgr>)
 set_tests_properties(test_ssim_mgr PROPERTIES
   ENVIRONMENT "RC=${TRC};OUT=${TOUT}"
 )
+
+#=======================================================================
+add_executable(test_mean_ssim_mgr
+               test_mean_ssim_mgr.cpp)
+
+target_include_directories(test_mean_ssim_mgr PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_INCLUDE_PATH}/img>
+  $<BUILD_INTERFACE:${CMAKE_INCLUDE_PATH}/metric>
+  $<BUILD_INTERFACE:${tcxx_SOURCE_DIR}/include/err>
+  $<BUILD_INTERFACE:${tcxx_SOURCE_DIR}/include/core>
+  $<BUILD_INTERFACE:${tcxx_SOURCE_DIR}/include/topology>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(test_mean_ssim_mgr PRIVATE
+                      fio
+                      metric
+                      img
+                      platform
+                      fmt
+                      doctest::doctest
+                      $<$<CONFIG:Debug>:--coverage>)
+
+target_compile_options(test_mean_ssim_mgr PRIVATE
+                       -Wall -Wextra -pedantic
+                       $<$<CONFIG:Debug>:--coverage -Og -g>
+                       $<$<CONFIG:Release>:-O3 -DNDEBUG>)
+
+add_test(NAME test_mean_ssim_mgr COMMAND $<TARGET_FILE:test_mean_ssim_mgr>)
+
+set_tests_properties(test_mean_ssim_mgr PROPERTIES
+  ENVIRONMENT "RC=${TRC};OUT=${TOUT}"
+)
