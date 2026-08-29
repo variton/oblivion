@@ -13,7 +13,7 @@ MeanSSIMMgr::MeanSSIMMgr(std::span<const std::uint8_t> original,
     : original_{original}, watermarked_{watermarked} {}
 
 MeanSSIMMgr::~MeanSSIMMgr() = default;
-
+//todo check how the errors are propagated
 tl::expected<double, MeanSSIMMgrErrorInfo>
 MeanSSIMMgr::computeMeanSSIM(int width, int height, int components) noexcept {
 
@@ -39,45 +39,40 @@ tl::expected<double, MeanSSIMMgrErrorInfo>
 MeanSSIMMgr::MtComputeMeanSSIM(int width, int height, int components) noexcept {
   img::ChannelMgr channel_mgr{width, height, components};
 
-  // auto original_res = channel_mgr.splitRGBChannels(original_);
-  // auto watermarked_res = channel_mgr.splitRGBChannels(watermarked_);
+  auto original_res = channel_mgr.splitRGBChannels(original_);
+  auto watermarked_res = channel_mgr.splitRGBChannels(watermarked_);
 
-  // auto original_color_0 = original_res.value()[0];
-  // auto original_color_1 = original_res.value()[1];
-  // auto original_color_2 = original_res.value()[2];
+  auto original_component = original_res.value();
+  auto watermarked_component = watermarked_res.value();
 
-  // auto watermarked_color_0 = watermarked_res.value()[0];
-  // auto watermarked_color_1 = watermarked_res.value()[1];
-  // auto watermarked_color_2 = watermarked_res.value()[2];
+  std::array<tl::expected<double, MeanSSIMMgrErrorInfo>, 3> channel_results{};
 
-  // std::array<tl::expected<double, MeanSSIMMgrErrorInfo>, 3>
-  // channel_results{};
+  {
+    std::jthread t1{[&] {
+      SSIMMgr ssim_mgr{original_component[0], watermarked_component[0]};
+      channel_results[0] = ssim_mgr.computeSSIM(width, height).value();
+    }};
 
-  // {
-  //   std::jthread t1{[&] {
-  //     SSIMMgr ssim_mgr{original_color_0, watermarked_color_0};
-  //     channel_results[0] = ssim_mgr.computeSSIM(width,height);
-  //   }};
-  //   std::jthread t2{[&] {
-  //     SSIMMgr ssim_mgr{original_color_1, watermarked_color_1};
-  //     channel_results[1] = ssim_mgr.computeSSIM(width,height);
-  //   }};
-  //   std::jthread t3{[&] {
-  //     SSIMMgr ssim_mgr{original_color_2, watermarked_color_2};
-  //     channel_results[2] = ssim_mgr.computeSSIM(width,height);
-  //   }};
-  // }  // all three joined here before we touch channel_results
+    std::jthread t2{[&] {
+      SSIMMgr ssim_mgr{original_component[1], watermarked_component[1]};
+      channel_results[1] = ssim_mgr.computeSSIM(width, height).value();
+    }};
 
-  // for (const auto& result : channel_results) {
-  //   if (!result.has_value()) {
-  //     return
-  //     err::unexpected(MeanSSIMMgrError::MeanSSIMChannelError,result.error().message);
-  //   }
-  // }
+    std::jthread t3{[&] {
+      SSIMMgr ssim_mgr{original_component[2], watermarked_component[2]};
+      channel_results[2] = ssim_mgr.computeSSIM(width, height).value();
+    }};
+  } // all three joined here before we touch channel_results
 
-  // double sum = channel_results[0].value() + channel_results[1].value() +
-  // channel_results[2].value(); return sum / 3.0;
-  return 1.0;
+  for (const auto &result : channel_results) {
+    if (!result.has_value()) {
+      return err::propagate(result,MeanSSIMMgrError::MeanSSIMChannelError);
+    }
+  }
+
+  double sum = channel_results[0].value() + channel_results[1].value() +
+               channel_results[2].value();
+  return sum / 3.0;
 }
 
 } // namespace metric
