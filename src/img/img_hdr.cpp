@@ -92,14 +92,14 @@ tl::expected<FHandlers, ImageErrorInfo> ImgHdr::init_handlers() noexcept {
 
   // Validate input file
   if (!input_file) {
-    return tl::unexpected(ImageErrorInfo{ImageError::OpenFileError,
-                                         "Failed to open input file\n"});
+    return err::unexpected(ImageError::OpenFileError,
+                           "Failed to open input file\n");
   }
 
   // Validate output file
   if (!output_file) {
-    return tl::unexpected(ImageErrorInfo{ImageError::OpenFileError,
-                                         "Failed to open output file\n"});
+    return err::unexpected(ImageError::OpenFileError,
+                           "Failed to open output file\n");
   }
 
   // Transfer ownership of FILE* into FHandlers
